@@ -1,2 +1,2 @@
-# baerwithme.github.io/My Portfolio/
+# baerwithme.github.io
 Mein Portfolio
