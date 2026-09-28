@@ -38,9 +38,5 @@ window.PORTFOLIO_DATA = {
     {title:"Platzhalter", desc:"Platz für ein weiteres privates Projekt.", cat:"privat", tag:"weiteres"},
     {title:"Bachelorarbeit", desc:"BSc Facility Management — Vertiefung Workplace. Titel/Thema kann hier ergänzt werden.", cat:"studium", tag:"bachelor"},
     {title:"Projektarbeit Corona", desc:"„Veränderung des Workplace Managements durch Corona“ — Projektarbeit im Studium.", cat:"studium", tag:"workplace"}
-  ],
-  privateArea: {
-    password: "1234",
-    target: "finanzplan_schweiz.html"
-  }
+  ]
 };
