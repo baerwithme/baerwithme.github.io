@@ -21,10 +21,13 @@
   *{box-sizing:border-box;margin:0;padding:0}
   html{scroll-behavior:smooth}
   body{font-family:'Instrument Sans',sans-serif;background:var(--sand);color:var(--ink);font-size:17px;line-height:1.65;-webkit-font-smoothing:antialiased}
+  .skip-link{position:absolute;left:-9999px;top:0;background:var(--deep);color:var(--foam);padding:10px 14px;border-radius:0 0 10px 0;z-index:200}
+  .skip-link:focus{left:0}
   .mono{font-family:'Geist Mono',monospace;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink2)}
   .wrap{max-width:1180px;margin:0 auto;padding:0 34px}
   a{color:inherit;text-decoration:none}
   button{font-family:inherit;cursor:pointer;border:none;background:none}
+  a:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid var(--soft);outline-offset:3px}
 
   /* ---------- NAV ---------- */
   nav{position:fixed;top:0;left:0;right:0;z-index:50;transition:all .3s}
@@ -190,15 +193,26 @@
     section{padding:72px 0}
     .hero{height:auto;min-height:580px;padding:120px 0 80px}
   }
+
+  @media(min-width:821px) and (max-width:1100px){
+    .proj-grid{grid-template-columns:repeat(2,1fr)}
+  }
+
+  @media(prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto}
+    .scroll{animation:none}
+    .hero-video{display:none}
+  }
 </style>
 </head>
 <body>
+<a href="#main-content" class="skip-link">Zum Inhalt springen</a>
 
 <!-- ============= NAV ============= -->
 <nav id="topnav">
   <div class="nav-inner">
     <a href="#home" class="logo">Jérôme Baer</a>
-    <button class="menu-btn" id="menuBtn" aria-label="Menü">☰</button>
+    <button class="menu-btn" id="menuBtn" aria-label="Menü" aria-expanded="false" aria-controls="navLinks">☰</button>
     <div class="nav-links" id="navLinks">
       <a href="#about">Über mich</a>
       <a href="#werdegang">Werdegang</a>
@@ -233,6 +247,7 @@
   <div class="hero-meta"><div class="wrap"><span class="mono scroll">Scroll ↓</span><span class="mono">Brugg AG · CH</span></div></div>
 </header>
 
+<main id="main-content">
 <!-- ============= ABOUT ============= -->
 <section id="about">
   <div class="wrap">
@@ -346,30 +361,31 @@
     <p style="color:rgba(253,253,252,.75);max-width:42ch;margin-top:18px">Du willst über ein Projekt sprechen, hast eine Frage oder einfach Lust auf einen Kaffee? Schreib mir.</p>
     <div class="foot-row">
       <div class="foot-cta">
-        <a href="mailto:XXXXX.xxxxx.com" class="foot-cta-mail">XXXXX.xxxxx.com</a>
-        <span class="mono" style="color:rgba(253,253,252,.55)">+41 79 xxx xx xx</span>
+        <a id="contactEmailPrimary" href="mailto:XXXXX.xxxxx.com" class="foot-cta-mail">XXXXX.xxxxx.com</a>
+        <span class="mono" id="contactPhone" style="color:rgba(253,253,252,.55)">+41 79 xxx xx xx</span>
       </div>
       <div class="foot-links">
         <span class="mono">Folgen</span>
-        <a href="https://www.linkedin.com/" target="_blank" rel="noopener">LinkedIn ↗</a>
-        <a href="mailto:J.............">E-Mail ↗</a>
+        <a id="contactLinkedin" href="https://www.linkedin.com/" target="_blank" rel="noopener">LinkedIn ↗</a>
+        <a id="contactEmailSecondary" href="mailto:J.............">E-Mail ↗</a>
       </div>
     </div>
     <div class="foot-bottom">
       <span class="verse">„Seek first the Kingdom" — Mt. 6,33</span>
-      <span class="mono">© 2026 · Jérôme Baer · Brugg AG</span>
+      <span class="mono" id="copyrightLine">© 2026 · Jérôme Baer · Brugg AG</span>
     </div>
   </div>
 </footer>
+</main>
 
 <!-- ============= PRIVATE MODAL ============= -->
-<div class="modal" id="privModal">
+<div class="modal" id="privModal" role="dialog" aria-modal="true" aria-labelledby="privTitle" aria-hidden="true">
   <div class="modal-box">
     <button class="modal-close" id="privClose" aria-label="Schliessen">×</button>
     <div class="modal-icon">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
     </div>
-    <h3>Privatbereich</h3>
+    <h3 id="privTitle">Privatbereich</h3>
     <p>Bitte gib dein Passwort ein, um auf deinen Finanzplan zuzugreifen.</p>
     <input type="password" class="modal-input" id="privInput" placeholder="••••" autocomplete="off">
     <button class="modal-btn" id="privSubmit">Entsperren →</button>
@@ -395,66 +411,44 @@
 </div>
 
 <!-- ===================================================
-     CV-DATEN — HIER ÄNDERST DU DEINEN LEBENSLAUF
-     Einfach Einträge bearbeiten, ergänzen oder entfernen.
-     Format pro Eintrag:
-       {date:"...", role:"...", org:"...", note:"...", type:"work|study|engage", current:true/false}
+     DATENPFLEGE
+     Inhalte liegen in /content.js in window.PORTFOLIO_DATA.
      =================================================== -->
+<script src="./content.js"></script>
 <script>
-const CV_DATA = [
-  // ---- AKTUELL ----
-  {date:"Seit 2023", role:"Master of Science · Human-Centered Digital Innovation", org:"ZHAW (Studium berufsbegleitend)", type:"study", current:true,
-   note:"Vertiefung in nutzerzentrierter Gestaltung digitaler Lösungen."},
-  {date:"12/2022 – heute", role:"Flächenmanager & Workplace Manager", org:"Axpo Group", type:"work", current:true},
-  {date:"Seit 09/2023", role:"Co-Leiter Surfweek für junge Erwachsene", org:"Ehrenamt", type:"engage", current:true},
+const data = window.PORTFOLIO_DATA || {};
+const CV_DATA = Array.isArray(data.cv) ? data.cv : [];
+const PROJECTS = Array.isArray(data.projects) ? data.projects : [];
+const PRIVATE_PASSWORD = data.privateArea?.password || "";
+const PRIVATE_TARGET = data.privateArea?.target || "finanzplan_schweiz.html";
 
-  // ---- BERUF ----
-  {date:"08/2021 – 12/2022", role:"Projektmitarbeiter Facility Management", org:"Axpo Group", type:"work"},
-  {date:"02/2021 – 07/2021", role:"Praktikant Facility Management", org:"Axpo Group", type:"work"},
-  {date:"01/2018 – 06/2018", role:"Rekrutenschule · Motorfahrer Soldat", org:"Schweizer Armee", type:"work"},
-  {date:"12/2017 – 02/2023", role:"Techniker Audio & Video (Teilzeit)", org:"Technik Partner AV AG", type:"work"},
-  {date:"08/2017 – 12/2017", role:"Maurer (Temporär)", org:"Käner Personal AG", type:"work"},
-  {date:"08/2014 – 08/2017", role:"Lehre als Maurer EFZ", org:"Brunschweiler Bauunternehmung AG", type:"work"},
-  {date:"07/2013 – 07/2014", role:"1. Lehrjahr Hochbauzeichner", org:"Gössi Architekten & Partner", type:"work"},
+function applyProfileData(){
+  const profile = data.profile || {};
+  const mapText = [
+    ['contactPhone', profile.phone],
+    ['copyrightLine', profile.copyright]
+  ];
+  mapText.forEach(([id, value]) => {
+    const el = document.getElementById(id);
+    if(el && value) el.textContent = value;
+  });
 
-  // ---- STUDIUM / AUSBILDUNG ----
-  {date:"09/2019 – 02/2023", role:"BSc Facility Management · Vertiefung Workplace", org:"ZHAW Wädenswil", type:"study",
-   note:"Bachelorarbeit · Semesterarbeit „Zukunft des Lernens an Hochschulen“ · Projektmanagement-Zertifikat"},
-  {date:"07/2018 – 08/2019", role:"Berufsmaturität Gesundheit & Soziales", org:"Berufsmaturitätsschule Zürich", type:"study"},
+  const mapLinks = [
+    ['contactEmailPrimary', profile.emailHref, profile.emailLabel],
+    ['contactEmailSecondary', profile.emailSecondaryHref, profile.emailSecondaryLabel],
+    ['contactLinkedin', profile.linkedinHref, 'LinkedIn ↗']
+  ];
+  mapLinks.forEach(([id, href, label]) => {
+    const el = document.getElementById(id);
+    if(!el) return;
+    if(href) el.href = href;
+    if(label) el.textContent = label;
+  });
 
-  // ---- ENGAGEMENT ----
-  {date:"09/2019 – 12/2022", role:"Head of Team · Jugendevent Unlocked", org:"Dietikon · Backstage & Hospitality", type:"engage"},
-  {date:"09/2019 – 06/2022", role:"Klassensprecher FM 19", org:"ZHAW Wädenswil", type:"engage"},
-  {date:"07/2011 – 12/2019", role:"Gruppenleiter Jungschar", org:"Jungschar Dietikon", type:"engage"},
-];
-
-// ---- PROJEKTE ----
-// Format: {title, desc, cat:"arbeit|privat|studium", tag}
-const PROJECTS = [
-  // Arbeit (5 Slots, fülle Titel & Beschreibung an wenn bereit)
-  {title:"Projekt 1 — Axpo", desc:"Kurze Beschreibung folgt. Platzhalter für ein berufliches Projekt.", cat:"arbeit", tag:"workplace"},
-  {title:"Projekt 2 — Axpo", desc:"Kurze Beschreibung folgt. Platzhalter für ein berufliches Projekt.", cat:"arbeit", tag:"flächen"},
-  {title:"Projekt 3 — Axpo", desc:"Kurze Beschreibung folgt. Platzhalter für ein berufliches Projekt.", cat:"arbeit", tag:"innovation"},
-  {title:"Projekt 4 — Axpo", desc:"Kurze Beschreibung folgt. Platzhalter für ein berufliches Projekt.", cat:"arbeit", tag:"prozesse"},
-  {title:"Projekt 5 — Axpo", desc:"Kurze Beschreibung folgt. Platzhalter für ein berufliches Projekt.", cat:"arbeit", tag:"digital"},
-
-  // Privat
-  {title:"Surfweek für junge Erwachsene", desc:"Co-Leiter einer Woche mit Surf, Gemeinschaft und Tiefgang. Organisation, Begleitung, Mitanpacken.", cat:"privat", tag:"leiten"},
-  {title:"Jungschar Dietikon", desc:"Über acht Jahre als Gruppenleiter. Kinder begleiten, Lager organisieren, Verantwortung tragen.", cat:"privat", tag:"engagement"},
-  {title:"Fideris", desc:"Kurze Beschreibung folgt. Hier kommt dein Fideris-Projekt rein.", cat:"privat", tag:"projekt"},
-  {title:"Platzhalter", desc:"Platz für ein weiteres privates Projekt.", cat:"privat", tag:"weiteres"},
-
-  // Studium
-  {title:"Bachelorarbeit", desc:"BSc Facility Management — Vertiefung Workplace. Titel/Thema kann hier ergänzt werden.", cat:"studium", tag:"bachelor"},
-  {title:"Projektarbeit Corona", desc:"„Veränderung des Workplace Managements durch Corona“ — Projektarbeit im Studium.", cat:"studium", tag:"workplace"},
-];
-
-// ---- PASSWORT (anpassbar) ----
-// Hier kannst du jederzeit ein neues Passwort setzen.
-// Achtung: Client-seitig — schützt vor versehentlichem Reinklicken, nicht vor technisch versierten Angreifern.
-const PRIVATE_PASSWORD = "1234";
-// Die eingebettete Finanzplan-Datei (muss im selben Ordner liegen):
-const PRIVATE_TARGET = "finanzplan_schweiz.html";
+  const locationLabel = document.querySelector('.hero-meta .mono:last-child');
+  if(locationLabel && profile.location) locationLabel.textContent = profile.location;
+}
+applyProfileData();
 
 // ===================================================
 //  RENDERING & INTERACTION
@@ -517,8 +511,14 @@ window.addEventListener('scroll',()=>{
 // --- Mobile menu ---
 const menuBtn = document.getElementById('menuBtn');
 const navLinks = document.getElementById('navLinks');
-menuBtn.addEventListener('click',()=>navLinks.classList.toggle('open'));
-navLinks.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>navLinks.classList.remove('open')));
+menuBtn.addEventListener('click',()=>{
+  const isOpen = navLinks.classList.toggle('open');
+  menuBtn.setAttribute('aria-expanded', String(isOpen));
+});
+navLinks.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{
+  navLinks.classList.remove('open');
+  menuBtn.setAttribute('aria-expanded','false');
+}));
 
 // --- Private Modal ---
 const modal = document.getElementById('privModal');
@@ -531,17 +531,22 @@ const emptyMsg = document.getElementById('privEmpty');
 document.getElementById('openPrivate').addEventListener('click',e=>{
   e.preventDefault();
   modal.classList.add('open');
+  modal.setAttribute('aria-hidden','false');
   setTimeout(()=>modalInput.focus(),100);
 });
 document.getElementById('privClose').addEventListener('click',()=>{
-  modal.classList.remove('open');modalInput.value='';modalErr.textContent='';
+  modal.classList.remove('open');modal.setAttribute('aria-hidden','true');modalInput.value='';modalErr.textContent='';
 });
 modal.addEventListener('click',e=>{
-  if(e.target===modal){modal.classList.remove('open');modalInput.value='';modalErr.textContent='';}
+  if(e.target===modal){modal.classList.remove('open');modal.setAttribute('aria-hidden','true');modalInput.value='';modalErr.textContent='';}
 });
 
 function attemptLogin(){
   const v = modalInput.value.trim();
+  if(!PRIVATE_PASSWORD){
+    modalErr.textContent = 'Privatbereich ist nicht konfiguriert.';
+    return;
+  }
   if(v === PRIVATE_PASSWORD){
     modal.classList.remove('open');
     modalInput.value=''; modalErr.textContent='';
@@ -553,7 +558,13 @@ function attemptLogin(){
 }
 document.getElementById('privSubmit').addEventListener('click',attemptLogin);
 modalInput.addEventListener('keydown',e=>{if(e.key==='Enter')attemptLogin();});
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){modal.classList.remove('open');overlay.classList.remove('open');}});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){
+    modal.classList.remove('open');
+    modal.setAttribute('aria-hidden','true');
+    overlay.classList.remove('open');
+  }
+});
 
 function openPrivate(){
   overlay.classList.add('open');
@@ -576,6 +587,11 @@ document.getElementById('privLogout').addEventListener('click',()=>{
   overlay.classList.remove('open');
   frame.src='';
 });
+
+if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+  const heroVideo = document.querySelector('.hero-video');
+  if(heroVideo) heroVideo.pause();
+}
 </script>
 </body>
 </html>
